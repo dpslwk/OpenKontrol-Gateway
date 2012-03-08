@@ -24,7 +24,7 @@
  History
     000 - Started 07/03/2012
  	001 - Initial release
-			frist pass at a basic bridge
+            first pass at a basic bridge
             assumes XRF is on hardware UART and using wiznet ethernet
             LLAP message have a max length of 12 char's
             need to publish each LLAP individually via MQTT
@@ -58,7 +58,7 @@
  * global vars
  * 
  ****************************************************/
-PubSubClient client(mqttIp, MQTT_PORT, callbackMQTT);
+PubSubClient mqttClient(mqttIp, MQTT_PORT, callbackMQTT);
 char LLAPmsg[LLAP_BUFFER_LENGHT];
 
 /**************************************************** 
@@ -90,7 +90,7 @@ void statusUpdate(byte* payload, int length) {
 #ifdef DEBUG_PRINT
         Serial.println("Status Request");
 #endif
-        client.publish(P_STATUS, RUNNING);
+        mqttClient.publish(P_STATUS, RUNNING);
     }
 }
 
@@ -121,7 +121,7 @@ void pollXRF() {
             while (pos < 12) {
                 LLAPmsg[pos++] = Serial.read();
             }
-            client.publish(P_TX, LLAPmsg);
+            mqttClient.publish(P_TX, LLAPmsg);
         }
     }
 } 
@@ -133,11 +133,11 @@ void pollXRF() {
  ****************************************************/
 void checkMQTT()
 {
-  	if(!client.connected()){
-		if (client.connect(CLIENT_ID)) {
-			client.publish(P_STATUS, RESTART);
-			client.subscribe(S_RX);
-			client.subscribe(S_STATUS);
+  	if(!mqttClient.connected()){
+		if (mqttClient.connect(CLIENT_ID)) {
+			mqttClient.publish(P_STATUS, RESTART);
+			mqttClient.subscribe(S_RX);
+			mqttClient.subscribe(S_STATUS);
 #ifdef DEBUG_PRINT
 			Serial.println("MQTT Reconnect");
 #endif
@@ -185,7 +185,7 @@ void loop() {
 	
 	// Poll MQTT
 	// should cause callback if theres a new message
-	client.loop();
+	mqttClient.loop();
 
 	// are we still connected to MQTT
 	checkMQTT();

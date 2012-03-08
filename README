@@ -2,3 +2,4 @@ These are some basic example for the Ciseco OpenKontrol Gateway
 
 OKMQTT:-
 	a basic LLAP to MQTT bridge
+    Requires PubSubClient form http://github.com/knolleary/pubsubclient or http://github.com/dpslwk/pubsubclient/

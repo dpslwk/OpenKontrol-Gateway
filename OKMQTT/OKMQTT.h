@@ -37,7 +37,7 @@
 #define XRF_BAUD 9600
 
 //LLAP messgaes are 12 char's long + NULL terminator
-#define LLAP_BUFFER_LENGHT
+#define LLAP_BUFFER_LENGHT 13
 
 
 /**************************************************** 
@@ -49,6 +49,7 @@
 byte mac[] = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xAF }; // Grab the mac from your wiznet chip
 
 //uncomment and fill in for static ip
+byte ip = false;
 //IPAddress ip(0,0,0,0);
 
 
@@ -58,7 +59,7 @@ byte mac[] = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xAF }; // Grab the mac from your 
  ****************************************************/
 
 // MQTT server 
-IPAddress mqttIp(10,0,0,2);
+byte mqttIp[] = {10,0,0,2};
 #define MQTT_PORT 1883
 
 // ClientId for connecting to MQTT
