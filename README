@@ -1,5 +1,30 @@
 These are some basic example for the Ciseco OpenKontrol Gateway
 
+Pin map for the ATMega328 
+
+D0  RX
+D1  TX
+D2  RFM12B IRQ
+D3  NRF24 IRQ
+D4  SDCARD  CS
+D5  VRX
+D6  VTX
+D7  XRF RTS
+D8  SRAM CS
+D9  RFM12B CS
+D10 ETHERNET CS
+D11 SPI MOSI
+D12 SPI MISO
+D13 SPI SCK
+
+A0  ETHERNET PIN7 IRQ?
+A1  NRF24 CE
+A2  NRF24 CSN
+A3  STATUS LED
+A4  I2C SDA
+A5  I2C SCL
+
+
 OKMQTT:-
 	a basic LLAP to MQTT bridge
-    Requires PubSubClient form http://github.com/knolleary/pubsubclient or http://github.com/dpslwk/pubsubclient/
+    Requires PubSubClient form http://github.com/knolleary/pubsubclient

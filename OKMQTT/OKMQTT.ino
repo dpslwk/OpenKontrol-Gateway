@@ -99,7 +99,7 @@ void statusUpdate(byte* payload, int length) {
  * called when we get a new MQTT
  * work out which topic was published to and handel as needed
  ****************************************************/
-void callbackMQTT(char* topic, byte* payload, int length) {
+void callbackMQTT(char* topic, byte* payload, unsigned int length) {
     if (strncmp(S_RX_MASK, topic, strlen(S_RX_MASK)) == 0) {
         pushXRF(topic, payload, length);
     } else  if (!strcmp(S_STATUS, topic)) {
