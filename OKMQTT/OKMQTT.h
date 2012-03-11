@@ -58,10 +58,10 @@ byte ip = false;
  *
  ****************************************************/
 
-// MQTT server 
-// byte mqttIp[] = {85.119.83.194};
+// MQTT server
+byte mqttIp[] = {85.119.83.194};
 //or
-char* mqttIp = "test.mosquitto.org";
+//char* mqttIp = "test.moqsuitto.org";
 
 #define MQTT_PORT 1883
 
