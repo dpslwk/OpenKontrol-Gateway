@@ -28,6 +28,13 @@
             assumes XRF is on hardware UART and using wiznet ethernet
             LLAP message have a max length of 12 char's
             need to publish each LLAP individually via MQTT
+    002 - changes to mqtt topics
+            topics are now
+            ok/tx/<DEVID>
+            ok/rx/<DEVID>
+            LLAP messages are decoded/constructed using <DEVID> from topic
+            messages from ok/tx/<DEVID> are auto padded with '-' to 12 char's
+            
  
  Known issues:
 
@@ -43,8 +50,8 @@
 
  */
 
-#define VERSION_NUM 001
-#define VERSION_STRING "OKMQTT ver: 001"
+#define VERSION_NUM 002
+#define VERSION_STRING "OKMQTT ver: 002"
 
 // Uncomment for debug prints
 #define DEBUG_PRINT
@@ -54,28 +61,30 @@
 #include <PubSubClient.h>
 #include "OKMQTT.h"
 
-/**************************************************** 
- * global vars
- * 
- ****************************************************/
-PubSubClient mqttClient(mqttIp, MQTT_PORT, callbackMQTT);
-char LLAPmsg[LLAP_BUFFER_LENGHT];
 
 /**************************************************** 
  * pushXRF 
  * Read incoming LLAP from MQTT and push to XRF 
  ****************************************************/
 void pushXRF(char* topic, byte* payload, int length) {
-    // basic implementation
+    // pre fill buffer with padding
+    memset(LLAPmsg, '-', LLAP_BUFFER_LENGTH);
+	// add a null terminator to make it a string
+    LLAPmsg[LLAP_BUFFER_LENGTH - 1] = 0;
+    // start char for LLAP packet
+    LLAPmsg[0] = 'a';
     
-    // clear the buffer
-    memset(LLAPmsg, 0, LLAP_BUFFER_LENGHT);
+	// copy <DEVID> from topic
+    memcpy(LLAPmsg +1, topic + strlen(S_RX_MASK), LLAP_DEVID_LENGTH);
+    
     // little memory overflow protection
-    if ((length) > LLAP_BUFFER_LENGHT-1) {
-        length = LLAP_BUFFER_LENGHT-1;
+    if ((length) > LLAP_DATA_LENGTH) {
+        length = LLAP_DATA_LENGTH;
     }
-    memcpy(LLAPmsg, payload, length);
+    // copy mqtt payload into messgae
+    memcpy(LLAPmsg+3, payload, length);
     
+    // send it out via the XRF
     Serial.print(LLAPmsg);
 } 
 
@@ -97,7 +106,7 @@ void statusUpdate(byte* payload, int length) {
 /**************************************************** 
  * callbackMQTT
  * called when we get a new MQTT
- * work out which topic was published to and handel as needed
+ * work out which topic was published to and handle as needed
  ****************************************************/
 void callbackMQTT(char* topic, byte* payload, unsigned int length) {
     if (strncmp(S_RX_MASK, topic, strlen(S_RX_MASK)) == 0) {
@@ -114,14 +123,25 @@ void callbackMQTT(char* topic, byte* payload, unsigned int length) {
 void pollXRF() {
     if (Serial.available() >= 12){
         if (Serial.read() == 'a') {
-            //clear the buffer
-            memset(LLAPmsg, 0, LLAP_BUFFER_LENGHT);
-            int pos = 0;
-            LLAPmsg[pos++] = 'a';
-            while (pos < 12) {
-                LLAPmsg[pos++] = Serial.read();
+        	// read in <DEVID>
+        	char devId[LLAP_DEVID_LENGTH +1];
+        	Serial.readBytes(devId, LLAP_DEVID_LENGTH);
+        	
+        	// build full topic
+			char llapTopic[strlen(P_TX) + LLAP_DEVID_LENGTH + 1];
+			strcat(llapTopic, P_TX);
+			strcat(llapTopic, devId);
+			
+           //clear the buffer
+            memset(LLAPmsg, 0, LLAP_BUFFER_LENGTH);
+            char t;
+            // read in rest of message for mqtt payload
+            for(int pos=0; pos < LLAP_DATA_LENGTH; pos++) {
+            	t = Serial.read();
+            	if(t != '-')
+                	LLAPmsg[pos] = Serial.read();
             }
-            mqttClient.publish(P_TX, LLAPmsg);
+            mqttClient.publish(llapTopic, LLAPmsg);
         }
     }
 } 
@@ -154,7 +174,7 @@ void setup() {
 #endif
     
     // Start ethernet on the OpenKontrol Gateway
-    // handels static ip or DHCP automatically
+    // handles static ip or DHCP automatically
     if(ip){
         Ethernet.begin(mac, ip);
     } else {    

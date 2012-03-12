@@ -35,9 +35,18 @@
  ****************************************************/
 // baud rate for the XRF
 #define XRF_BAUD 9600
+#define XRF_POWER_PIN 8
 
 //LLAP messgaes are 12 char's long + NULL terminator
-#define LLAP_BUFFER_LENGHT 13
+#define LLAP_BUFFER_LENGTH 13
+#define LLAP_DEVID_LENGTH 2
+#define LLAP_DATA_LENGTH 9
+
+/**************************************************** 
+ * global vars
+ * 
+ ****************************************************/
+char LLAPmsg[LLAP_BUFFER_LENGTH];
 
 
 /**************************************************** 
@@ -57,13 +66,14 @@ byte ip = false;
  * MQTT settings
  *
  ****************************************************/
-
-// MQTT server
-byte mqttIp[] = {85.119.83.194};
-//or
+byte mqttIp[] = {85,119,83,194};
+// or
 //char* mqttIp = "test.moqsuitto.org";
 
 #define MQTT_PORT 1883
+// forward def of callback
+void callbackMQTT(char*, byte*, unsigned int);
+PubSubClient mqttClient(mqttIp, MQTT_PORT, callbackMQTT);
 
 // ClientId for connecting to MQTT
 #define CLIENT_ID "OpenKnotrol"
@@ -73,7 +83,7 @@ byte mqttIp[] = {85.119.83.194};
 #define S_RX_MASK   "ok/tx/"
 
 // Publish Topics
-#define P_TX		"ok/rx"
+#define P_TX		"ok/rx/"
 
 // Status Topic, use to say we are alive or DEAD (will)
 #define S_STATUS "ok/status"
