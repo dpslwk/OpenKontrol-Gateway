@@ -27,4 +27,4 @@ A5  I2C SCL
 
 OKMQTT:-
 	a basic LLAP to MQTT bridge
-    Requires PubSubClient form http://github.com/knolleary/pubsubclient
+    Requires PubSubClient form http://github.com/dpslwk/pubsubclient

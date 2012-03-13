@@ -47,6 +47,7 @@
  * 
  ****************************************************/
 char LLAPmsg[LLAP_BUFFER_LENGTH];
+EthernetClient ethClient;
 
 
 /**************************************************** 
@@ -73,7 +74,7 @@ byte mqttIp[] = {85,119,83,194};
 #define MQTT_PORT 1883
 // forward def of callback
 void callbackMQTT(char*, byte*, unsigned int);
-PubSubClient mqttClient(mqttIp, MQTT_PORT, callbackMQTT);
+PubSubClient mqttClient(mqttIp, MQTT_PORT, callbackMQTT, ethClient);
 
 // ClientId for connecting to MQTT
 #define CLIENT_ID "OpenKnotrol"

@@ -34,6 +34,7 @@
             ok/rx/<DEVID>
             LLAP messages are decoded/constructed using <DEVID> from topic
             messages from ok/tx/<DEVID> are auto padded with '-' to 12 char's
+            Now using updated PubSubClient from https://github.com/dpslwk/pubsubclient
             
  
  Known issues:
