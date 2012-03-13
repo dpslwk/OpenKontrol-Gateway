@@ -28,3 +28,9 @@ A5  I2C SCL
 OKMQTT:-
 	a basic LLAP to MQTT bridge
     Requires PubSubClient form http://github.com/dpslwk/pubsubclient
+
+OKMQTT_WIFLY:-
+    LLAP to MQTT bridge
+    using RN-XV on SoftwareSerial
+    Requires WiFly from https://github.com/dpslwk/WiFly
+    Requires PubSubClient from https://github.com/dpslwk/pubsubclient
