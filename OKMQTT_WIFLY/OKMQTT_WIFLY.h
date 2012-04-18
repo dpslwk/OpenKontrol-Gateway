@@ -33,10 +33,15 @@
  * genral defines
  * use for staic config bits
  ****************************************************/
+// Status LED
+#define STATUS_LED 17
+#define STATUS_TOGGLE_TIMEOUT 500
+unsigned long statusTimeOut = 0;
+byte statusState = 0;
+
 // baud rate for the XRF
 #define XRF_BAUD 9600
-// for testing with XBEE shield
-#define XRF_POWER_PIN 8
+
 
 // WiFly RN-XV details
 #define XV_BAUD 9600
